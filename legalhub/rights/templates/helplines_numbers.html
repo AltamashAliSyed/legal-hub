@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Legal Aid & Helplines</title>
+    <style>
+        body { 
+            font-family: Arial, sans-serif; padding: 20px; 
+        }
+        h1 { 
+            text-align: center; 
+        }
+        .helpline-list {
+             max-width: 600px; margin: auto; 
+        }
+        .helpline {
+             padding: 10px; border-bottom: 1px solid #ccc; 
+            }
+        .number {
+             font-weight: bold; color: #d9534f; 
+            }
+    </style>
+</head>
+<body>
+    <h1>Legal Aid & Helpline Numbers</h1>
+    <div class="helpline-list">
+        {% for name, number in helplines.items %}
+        <div class="helpline">
+            <strong>{{ name }}:</strong> 
+            <a href="tel:{{ number }}" class="number">{{ number }}</a>
+        </div>
+        {% endfor %}
+    </div>
+</body>
+</html>

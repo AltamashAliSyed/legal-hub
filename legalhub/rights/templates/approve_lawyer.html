@@ -1,0 +1,39 @@
+<style>
+    .approval-box {
+        border: solid 1px black;
+        border-radius: 8px;
+        padding: 20px;
+        background-color: #f9f9f9;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .approval-box h2 {
+        margin-bottom: 15px;
+        color: #333;
+    }
+    .approval-box p {
+        margin: 10px 0;
+        line-height: 1.5;
+        color: #555;
+    }
+    .approval-box img {
+        max-width: 150px;
+        height: auto;
+        margin-top: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+</style>
+
+{% block content %}
+    <div class="approval-box">
+        <h2>Approve Lawyer Profile</h2>
+        <p><strong>Name:</strong> {{ lawyer.name }}</p>
+        <p><strong>Image:</strong></p>
+        <img src="{{ lawyer.img.url }}" alt="Image of {{ lawyer.name }}"/>
+        <p><strong>Phone:</strong> {{ lawyer.phone }}</p>
+        <p><strong>Document:</strong></p>
+        <img src="{{ lawyer.doc.url }}" alt="Document of {{ lawyer.name }}"/>
+        <p><strong>Specialization:</strong> {{ lawyer.specialization }}</p>
+        <p><strong>Bio:</strong> {{ lawyer.bio }}</p>
+    </div>
+{% endblock %}

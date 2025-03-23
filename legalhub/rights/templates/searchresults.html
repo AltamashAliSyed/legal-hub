@@ -1,0 +1,203 @@
+
+
+<style>
+    
+    h3 , h2 ,p {
+         font-size: 30px;
+         color: aliceblue;
+    }
+
+    ul{
+        font-size: 30px;
+        color: aliceblue;
+    }
+
+    body{
+        
+        width: 100%;
+        background-color:  #0B0C10;
+    }
+
+    #a{
+        display: flex;
+        width: 20%;
+        justify-content: center;
+        text-align: center;
+        background-color: aliceblue;
+        padding: 10px 10px;
+        margin-left: 35%;
+        color: black;
+        border-radius: 20px;
+        font-size: 20px;
+        align-items: center;
+
+        
+}
+
+        .ex{
+            height:13px;
+            width: 100px;
+            background-color: white;
+            color:black;
+            border-radius: 30px;
+            font-size: 18px;
+            padding: 3px 3px 3px 3px ;
+            margin-left: 20px;
+            font-size: xx-large;
+        }
+    
+    
+</style>
+
+
+
+<body>
+<h2> Search results for "{{query}}"</h2>
+
+{% if civil_right %}
+<h3> Civil Rights</h3>
+<ul>
+    {% for right in civil_right %}
+    <li>{{right}} <br> <br>{{right.Description}}</li><br>
+    <a class='ex' href="{% url 'examplecivil' right.id %}">Learn More</a><br><br>
+
+    {% endfor %}
+</ul>
+
+{% endif %}
+<br>
+
+{% if Directive %}
+<h3>Directive Principle </h3>
+
+<ul>
+    {% for rights in Directive %}
+    <li> {{rights}}  <br> <br> {{rights.Description}}</li><br>
+    <a class='ex' href="{% url 'directiveexample' rights.id %}">Learn More</a><br><br>
+    {% endfor %}
+</ul>
+
+{% endif %}
+<br>
+
+
+{% if Economic_right %}
+<h3>Economic Rights </h3>
+
+<ul>
+    {% for rights in Economic_right%}
+    <li> {{rights}}  <br> <br> {{rights.Description}}</li><br>
+    <a  class='ex' href="{% url 'economicexample' rights.id %}">Learn More</a><br><br>
+    
+    
+    
+    {% endfor %}
+</ul>
+
+{% endif %}
+<br>
+
+{% if environmental_right %}
+<h3>Environmental Right </h3>
+
+<ul>
+    {% for rights in environmental_right %}
+    <li> {{rights}}   <br> <br> {{rights.Description}}</li><br>
+    <a class='ex' href="{% url 'exampleenvironmental' rights.id %}">Learn More</a><br><br>
+    {% endfor %}
+</ul>
+
+{% endif %}
+<br>
+
+
+{% if fundamental_right %}
+<h3>Fundamental Right </h3>
+
+<ul>
+    {% for rights in fundamental_right %}
+    <li> {{rights}}  <br> <br> {{rights.Description}}</li><br>
+    <a class='ex' href="{% url 'examplefundamental' rights.id %}">Learn More</a><br><br>
+    {% endfor %}
+</ul>
+
+{% endif %}
+<br>
+
+
+{% if human_right %}
+<h3>Human Right </h3>
+
+<ul>
+    {% for rights in human_right %}
+    <li> {{rights}}   <br> <br> {{rights.Description}}</li><br>
+    <a class='ex' href="{% url 'humanexample' rights.id %}">Learn More</a><br><br>
+    {% endfor %}
+</ul>
+
+{% endif %}
+<br>
+
+{% if legal_right %}
+<h3>Legal Right </h3>
+
+<ul>
+    {% for rights in legal_right %}
+    <li> {{rights}}   <br> <br> {{rights.Description}}</li><br>
+    <a class='ex' href="{% url 'legalexample' rights.id %}">Learn More</a><br><br>
+    {% endfor %}
+</ul>
+
+{% endif %}
+<br>
+
+{% if political_right %}
+<h3>Political Right </h3>
+
+<ul>
+    {% for rights in political_right %}
+    <li> {{rights}}   <br> <br> {{rights.Description}}</li><br>
+    <a class='ex' href="{% url 'politicalexample' rights.id %}">Learn More</a><br><br>
+    {% endfor %}
+</ul>
+
+{% endif %}
+<br>
+
+{% if Criminallaw %}
+<h3>Criminal Law </h3>
+
+<ul>
+    {% for rights in Criminallaw %}
+    <li> {{rights}}   <br> <br> {{rights.Description}}</li><br>
+    <a class='ex' href="{% url 'Criminalexample' rights.id %}">Learn More</a><br><br>
+    {% endfor %}
+</ul>
+
+{% endif %}
+<br>
+
+{% if personallaw %}
+<h3>Personal Law </h3>
+
+<ul>
+    {% for rights in personallaw %}
+    <li> {{rights}}   <br> <br> {{rights.Description}}</li><br>
+    <a class='ex' href="{% url 'personalexample' rights.id %}">Learn More</a><br><br>
+    {% endfor %}
+</ul>
+
+{% endif %}
+<br>
+
+
+
+
+
+{% if not fundamental_right and not civil_right and not environmental_right and not economic_right and not human_right and not legal_right and not political_right and not directive %}
+<p>The Rights you type will have typo's or it is not avaliable !!</p>
+{% endif %}
+
+<a  id="a" href="{% url 'home' %}"  >Back To home</a>
+
+</body>
