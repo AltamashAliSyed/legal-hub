@@ -2,12 +2,12 @@ from django.shortcuts import render, redirect , get_object_or_404
 from .models import FundamentalRights,CivilRights,EnvironmentalRights,EconomicRights,humanRights,LegalRights,politicalRights,DirectivePrincipleofOurStatePolicy , Lawyer,PersonalLaw,CriminalLaw,UnionTerritory
 from django.http import JsonResponse,HttpResponse
 from django.db.models import Q 
-from .forms import LawyerForm 
-from .models import Lawyer
-
+from .forms import LawyerForm,CaseForm
+from .models import Lawyer,Case,Client
+from .decorators import custom_login
 
 # Create your views here.
-
+@custom_login
 def home(request):
     
     query = request.GET.get('q')
@@ -412,29 +412,67 @@ def peersonallawawexample(request, right_id):
 
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib import messages
+from django.forms import modelformset_factory
+
+@custom_login
 def create_lawyer_profile(request):
+    CaseFormSet = modelformset_factory(Case, form=CaseForm, extra=1, can_delete=True)
+
     if request.method == "POST":
-        form = LawyerForm(request.POST, request.FILES)
-        if form.is_valid():
-            lawyer = form.save(commit = False)
-            lawyer.is_approved = False
-            lawyer.save()
-            messages.success(request,'Your profile has been approved ')
-            return redirect('profilesuccess')
-        
+        lawyer_form = LawyerForm(request.POST, request.FILES)
+        case_formset = CaseFormSet(request.POST or None)
+
+        if lawyer_form.is_valid() and case_formset.is_valid():
+            # Save the lawyer object first
+            lawyer = lawyer_form.save(commit=False)
+
+            # Storing the names as text for supervising_lawyer and associated_lawyers
+            lawyer.supervising_lawyer = lawyer_form.cleaned_data.get('supervising_lawyer', '')
+            lawyer.associated_lawyers = lawyer_form.cleaned_data.get('associated_lawyers', '')
+
+            lawyer.save()  # Save the lawyer object
+
+            # Now handle case and client creation
+            for form in case_formset:
+                if form.cleaned_data:
+                    case = form.save(commit=False)
+                    
+                    # Manually create a client if the client name is provided in the form
+                    client_name = form.cleaned_data.get('client_name')
+                    if client_name:
+                        # Create or fetch the client manually
+                        client, created = Client.objects.get_or_create(name=client_name)
+
+                        # Associate the client with the case
+                        case.client = client
+
+                    # Associate the case with the lawyer
+                    case.lawyer = lawyer
+                    case.save()  # Save the case
+
+            return redirect("lawyer_list")  # Redirect to the lawyer list after creation
+
     else:
-        form = LawyerForm()
-    return render(request, 'create_lawyer.html', {'form': form})
+        lawyer_form = LawyerForm()
+        case_formset = CaseFormSet(queryset=Case.objects.none())  # Empty formset for new cases
+
+    return render(request, "create_lawyer.html", {
+        "lawyer_form": lawyer_form,
+        "case_formset": case_formset
+    })
+
 
 def profilesuccess(request):
     return render(request,'profilesuccess.html')
 
 
 
+
 from django.conf import settings
-@staff_member_required
+
 
 def approve_lawyer(request, lawyer_id):
+    
     lawyer = get_object_or_404(Lawyer, id=lawyer_id)
     if request.method == 'POST':
         lawyer.is_approved = True
@@ -448,7 +486,7 @@ def approve_lawyer(request, lawyer_id):
     return render(request, 'approve_lawyer.html', {'lawyer': lawyer})
 
 
-@staff_member_required
+
 def unapproved_lawyer(request):
     unapproved = Lawyer.objects.filter(is_approved = False)
     return render(request , 'unapproved_lawyer.html',{'unapproved':unapproved})
@@ -525,7 +563,7 @@ def legal_news(request):
             print(f"Failed to fetch news from {feed_url}")
 
     return render(request, "legal_news.html", {"articles": articles})
-""""
+
 #authentication
 
 from django.contrib.auth.models import User
@@ -575,48 +613,3 @@ def logout_view(request):
     return redirect('login')
 
 
-
-@custom_login
-def add_comment_ajax(request):
-    if request.method == "POST":
-        comment_text = request.POST.get("comment")
-        post_id = request.POST.get("post_id")
-
-        if comment_text and post_id:
-            comment = Comment.objects.create(user=request.user, post_id=post_id, text=comment_text)
-            return JsonResponse({"success": True, "comment": comment.text, "username": request.user.username})
-
-    return JsonResponse({"success": False, "error": "Invalid data"})
-
-
-@custom_login
-def reply_ajax(request):
-    if request.method == "POST":
-        comment_id = request.POST.get("comment_id")
-        message = request.POST.get("message")
-
-        print(f"Received comment_id: {comment_id}")
-        print(f"Received message: {message}")
-        print(f"User: {request.user}, ID: {request.user.id}")
-
-        comment = get_object_or_404(Comment, id=comment_id)
-
-        lawyer = Lawyer.objects.filter(user=request.user).first()
-        if not lawyer:
-            print("❌ Lawyer does not exist!")
-            return JsonResponse({"success": False, "error": "Only lawyers can reply."})
-
-        print(f"Lawyer found: {lawyer.name}, Approved: {lawyer.is_approved}")
-
-        if not lawyer.is_approved:
-            print("❌ Lawyer is NOT approved!")
-            return JsonResponse({"success": False, "error": "Only approved lawyers can reply."})
-
-        reply = Reply.objects.create(comment=comment, lawyer=lawyer, message=message)
-        print(f"✅ Reply saved: {reply.lawyer.name}: {reply.message}")
-
-        return JsonResponse({"success": True, "lawyer_name": lawyer.name, "message": message})
-
-    print("❌ Invalid request method")
-    return JsonResponse({"success": False})"
-"""

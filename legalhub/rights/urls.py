@@ -1,7 +1,7 @@
 from django.urls import path
-from .views import home,Fundamental,Civil,Environmental,Economic,human,Legal,political,Directive,autocomplete_fundamental_rights,autocomplete_civil_rights,autocompleteDirective,autocompleteEconomic,autocompletehuman,autocompletelegal,autocompleteenvironmental,autocompletepolitical,searchresults,examplecivil,examplefundamental,environmentalexample,economicexample,humanexample,legalexample,politialexample,directiveexample,create_lawyer_profile,profilesuccess,approve_lawyer,unapproved_lawyer,lawyer_list,CriminalLawexample,autocompleteCriminalLaw,criminallaw,personallaw,peersonallawawexample,personallaw,autocompletepersonallaw,union_territory_list,autocomplete_union_territory,union_territory_detail,helpline_numbers,legal_news
+from .views import home,Fundamental,Civil,Environmental,Economic,human,Legal,political,Directive,autocomplete_fundamental_rights,autocomplete_civil_rights,autocompleteDirective,autocompleteEconomic,autocompletehuman,autocompletelegal,autocompleteenvironmental,autocompletepolitical,searchresults,examplecivil,examplefundamental,environmentalexample,economicexample,humanexample,legalexample,politialexample,directiveexample,create_lawyer_profile,profilesuccess,approve_lawyer,unapproved_lawyer,lawyer_list,CriminalLawexample,autocompleteCriminalLaw,criminallaw,personallaw,peersonallawawexample,personallaw,autocompletepersonallaw,union_territory_list,autocomplete_union_territory,union_territory_detail,helpline_numbers,legal_news,signup_view,login_view,logout_view
 urlpatterns= [ 
-    path('',home,name="home"),
+    path('home/',home,name="home"),
     path("FundamentalRights/",Fundamental,name='FundamentalRights'),
     path('autocomplete/fundamental-rights/',autocomplete_fundamental_rights, name="autocomplete_fundamental_rights"),
     path('examplefundamental/<int:right_id>/',examplefundamental,name='examplefundamental'),
@@ -56,15 +56,14 @@ urlpatterns= [
     path('helplines/', helpline_numbers, name='helpline_numbers'),
     
     path('lawyer_list',lawyer_list,name='lawyer_list'),
+    
     path('news/', legal_news, name='legal_news'),
                                                                                                                                         
-    #path('signup/', signup_view, name='signup'),
-    #path('login/', login_view, name='login'),
-    #path('logout/', logout_view, name='logout'),
+    path('signup/', signup_view, name='signup'),
+    path('', login_view, name='login'),
+    path('logout/', logout_view, name='logout'),
 
-    # AJAX Comment & Reply
-    #path('add-comment/', add_comment_ajax, name='add_comment_ajax'),
-    #path('add-reply/', reply_ajax, name='reply_ajax'), 
+
 
    
     

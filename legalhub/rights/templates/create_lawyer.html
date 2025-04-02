@@ -1,131 +1,56 @@
-<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Semi+Condensed:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Bebas+Neue&family=Big+Shoulders+Stencil:opsz,wght@10..72,100..900&family=Chakra+Petch:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,300;1,400;1,500;1,600;1,700&family=Dancing+Script:wght@600&family=EB+Garamond:ital,wght@0,400..800;1,400..800&family=Faculty+Glyphic&family=Lora:ital,wght@0,400..700;1,400..700&family=Playwrite+AU+VIC+Guides&family=Playwrite+IT+Moderna+Guides&family=Rowdies:wght@300;400;700&family=Space+Grotesk:wght@300..700&family=Spectral:ital,wght@0,200;0,300;0,400;0,500;0,600;0,700;0,800;1,200;1,300;1,400;1,500;1,600;1,700;1,800&family=Teko:wght@300..700&family=Titillium+Web:ital,wght@0,200;0,300;0,400;0,600;0,700;0,900;1,200;1,300;1,400;1,600;1,700&display=swap" rel="stylesheet">
-
-
-<style>
-    body{
-            background-color: #020211;
-            
-            width: 100%;
-            
-       }
-    .box {
-        
-        border: solid 2px black;
-        border-radius: 10px;
-        padding: 20px;
-        background-color: #f9f9f9;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
-        width: 80%;
-        height: 92%;
-        margin-left: 10%;
-        margin-top: 2%;
-        margin-bottom: 10%;
-        height: 40vh auto;
-        
-        
-    }
-    h2 {
-        font-weight: bolder;
-        text-align: center; 
-        margin-bottom: 20px;
-        font-family: "Barlow Semi Condensed", sans-serif;
-        font-weight: 300;
-        font-style: bold;
-    }
-    label {
-        font-weight: bolder;
-        font-family: "Barlow Semi Condensed", sans-serif;
-        font-weight: 500;
-        font-style: bold;
-    }
-    #button {
-        margin-top: 20px;
-        display: flex;
-        justify-content: center;
-    }
-    #bio {
-        height: 150px; 
-        resize: none;
-        width: 100%; 
-        font-family: "Barlow Semi Condensed", sans-serif;
-        font-weight: 500;
-        font-style: bold;
-    }
-</style>
-
 {% block content %}
-<div class="box">
-    <h2>Create Your Lawyer Profile</h2>
-    <form method="POST" enctype="multipart/form-data">
-        {% csrf_token %}
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg p-4">
+                <h2 class="text-center">Create Your Lawyer Profile</h2>
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+                    
+                    <!-- Render Lawyer Form -->
+                    {{ lawyer_form.as_p }}
+                    
+                    <h3 class="mt-4">Cases</h3>
+                    <div id="case-formset">
+                        {{ case_formset.management_form }}
+                        {% for form in case_formset %}
+                        <div class="case-form border p-3 mb-2">
+                            {{ form.as_p }}
+                            <button type="button" class="btn btn-danger btn-sm remove-case">Remove</button>
+                        </div>
+                        {% endfor %}
+                    </div>
 
-        <div class="mb-3">
-            <label for="name" class="form-label">Name:</label>
-            {{ form.name}}
-            {% if form.name.errors %}
-                <div class="text-danger">{{ form.name.errors }}</div>
-            {% endif %}
+                    <button type="button" id="add-case" class="btn btn-secondary">Add Case</button>
+
+                    <div class="text-center mt-3">
+                        <button type="submit" class="btn btn-primary">Create Profile</button>
+                        <a href="{% url 'home' %}" class="btn btn-secondary">Cancel</a>
+                    </div>
+
+                </form>
+            </div>
         </div>
-
-        <div class="mb-3">
-            <label for="img" class="form-label">Put Your Image Here:</label>
-            {{ form.img }}
-            {% if form.img.errors %}
-                <div class="text-danger">{{ form.img.errors }}</div>
-            {% endif %}
-        </div>
-
-        <div class="mb-3">
-            <label for="doc" class="form-label">Put Your Document Here:</label>
-            {{ form.doc }}
-            {% if form.doc.errors %}
-                <div class="text-danger">{{ form.doc.errors }}</div>
-            {% endif %}
-        </div>
-
-        
-
-        <div class="mb-3">
-            <label for="specialization" class="form-label">Specialization:</label>
-            {{ form.specialization}}
-            {% if form.specialization.errors %}
-                <div class="text-danger">{{ form.specialization.errors }}</div>
-            {% endif %}
-        </div>
-
-        <div class="mb-3">
-            <label for="bio" class="form-label">Bio:</label>
-            <textarea id="bio" name="bio" class="form-control" rows="5"></textarea>
-            {% if form.bio.errors %}
-                <div class="text-danger">{{ form.bio.errors }}</div>
-            {% endif %}
-        </div>
-
-        <div class="mb-3">
-            <label for="phone" class="form-label">Phone No.:</label>
-            {{ form.phone }}
-            {% if form.phone.errors %}
-                <div class="text-danger">{{ form.phone.errors }}</div>
-            {% endif %}
-        </div>
-
-        <div class="mb-3">
-            <label for="location" class="form-label">Location : </label>
-            {{ form.location}}
-            {% if form.location.errors %}
-                <div class="text-danger">{{ form.location.errors }}</div>
-            {% endif %}
-        </div>
-
-        
-
-        <div id="button">
-            <button type="submit" class="btn btn-primary">Submit</button>
-            <a href="{% url 'home' %}" class="btn btn-secondary ms-2">Home</a>
-        </div>
-    </form>
+    </div>
 </div>
+
+<!-- JavaScript for Dynamic Cases -->
+<script>
+    document.getElementById('add-case').addEventListener('click', function() {
+        let caseFormset = document.getElementById('case-formset');
+        let newCaseForm = caseFormset.querySelector('.case-form').cloneNode(true);
+        newCaseForm.querySelectorAll('input, select').forEach(input => input.value = '');
+        caseFormset.appendChild(newCaseForm);
+
+        newCaseForm.querySelector('.remove-case').addEventListener('click', function() {
+            this.closest('.case-form').remove();
+        });
+    });
+
+    document.querySelectorAll('.remove-case').forEach(button => {
+        button.addEventListener('click', function() {
+            this.closest('.case-form').remove();
+        });
+    });
+</script>
 {% endblock %}

@@ -153,7 +153,7 @@ class UnionTerritory(models.Model):
 from django.contrib.auth.models import User
 
 class Lawyer(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE, null=False, blank=False)
+    
 
     img = models.ImageField(upload_to='lawyerpic/',default='images/default_image.png')
     name= models.CharField(max_length = 50)
@@ -165,28 +165,28 @@ class Lawyer(models.Model):
 
     is_approved = models.BooleanField(default=False)
 
+    supervising_lawyer = models.CharField(max_length=255, blank=True, null=True)
+    associated_lawyers = models.CharField(max_length=500, blank=True, null=True)
+
+
+
+
 
     def __str__(self):
         return self.name
     
-    
-
-
-class Comment(models.Model):
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    description =models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+class Client(models.Model):
+    name = models.CharField(max_length=100, unique=True)
+    phone = models.CharField(max_length=10, null=True, blank=True)
 
     def __str__(self):
-        return self.title
-    
-class Reply(models.Model):
-    comment=models.ForeignKey(Comment,on_delete=models.CASCADE,related_name='replies')
-    lawyer = models.ForeignKey(Lawyer, on_delete=models.CASCADE)
-    message = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+        return self.name
+
+class Case(models.Model):
+    case_name = models.CharField(max_length=200)
+    completion = models.FloatField(default=0.0)
+    lawyer = models.ForeignKey(Lawyer, on_delete=models.CASCADE, related_name="cases")  # Link to lawyer
+    client = models.ForeignKey(Client, on_delete=models.SET_NULL, null=True, blank=True, related_name="cases")  # Link to client
 
     def __str__(self):
-        return f'replay by{self.lawyer.name}'
-    
+        return f"{self.case_name} ({self.completion}%)"
